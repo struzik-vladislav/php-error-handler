@@ -2,19 +2,16 @@
 
 namespace Struzik\ErrorHandler;
 
-use Struzik\ErrorHandler\Processor\LoggerProcessor;
 use Struzik\ErrorHandler\Processor\ProcessorInterface;
-use Struzik\ErrorHandler\Processor\ReturnFalseProcessor;
 use Struzik\ErrorHandler\Exception\LogicException;
-use Psr\Log\NullLogger;
 
 class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     public function testSetValidProcessorsStack()
     {
         $validStack = [
-            new LoggerProcessor(new NullLogger()),
-            new ReturnFalseProcessor(),
+            $this->createMock(ProcessorInterface::class),
+            $this->createMock(ProcessorInterface::class),
         ];
         $errorHandler = new ErrorHandler();
         $this->assertSame($errorHandler, $errorHandler->setProcessorsStack($validStack));
@@ -26,7 +23,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 
         $invalidStack = [
             new \stdClass(),
-            new ReturnFalseProcessor(),
+            $this->createMock(ProcessorInterface::class),
         ];
         $errorHandler = new ErrorHandler();
         $errorHandler->setProcessorsStack($invalidStack);
@@ -45,8 +42,8 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
     public function testGetProcessorsStack()
     {
         $stack = [
-            new LoggerProcessor(new NullLogger()),
-            new ReturnFalseProcessor(),
+            $this->createMock(ProcessorInterface::class),
+            $this->createMock(ProcessorInterface::class),
         ];
         $errorHandler = new ErrorHandler();
         $errorHandler->setProcessorsStack($stack);
@@ -56,34 +53,34 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testPushProcessor()
     {
-        $falseProcessor = new ReturnFalseProcessor();
-        $loggerProcessor = new LoggerProcessor(new NullLogger());
+        $firstProcessor = $this->createMock(ProcessorInterface::class);
+        $secondProcessor = $this->createMock(ProcessorInterface::class);
         $errorHandler = new ErrorHandler();
         $expectedStack = [];
 
-        array_unshift($expectedStack, $falseProcessor);
-        $this->assertSame($errorHandler, $errorHandler->pushProcessor($falseProcessor));
+        array_unshift($expectedStack, $firstProcessor);
+        $this->assertSame($errorHandler, $errorHandler->pushProcessor($firstProcessor));
         $this->assertEquals($expectedStack, $errorHandler->getProcessorsStack());
 
-        array_unshift($expectedStack, $loggerProcessor);
-        $this->assertSame($errorHandler, $errorHandler->pushProcessor($loggerProcessor));
+        array_unshift($expectedStack, $secondProcessor);
+        $this->assertSame($errorHandler, $errorHandler->pushProcessor($secondProcessor));
         $this->assertEquals($expectedStack, $errorHandler->getProcessorsStack());
     }
 
     public function testPopProcessor()
     {
-        $loggerProcessor = new LoggerProcessor(new NullLogger());
-        $falseProcessor = new ReturnFalseProcessor();
+        $firstProcessor = $this->createMock(ProcessorInterface::class);
+        $secondProcessor = $this->createMock(ProcessorInterface::class);
 
         $stack = [
-            $loggerProcessor,
-            $falseProcessor,
+            $firstProcessor,
+            $secondProcessor,
         ];
         $errorHandler = new ErrorHandler();
         $errorHandler->setProcessorsStack($stack);
 
-        $this->assertSame($loggerProcessor, $errorHandler->popProcessor());
-        $this->assertSame($falseProcessor, $errorHandler->popProcessor());
+        $this->assertSame($firstProcessor, $errorHandler->popProcessor());
+        $this->assertSame($secondProcessor, $errorHandler->popProcessor());
 
         $this->expectException(LogicException::class);
         $errorHandler->popProcessor();
