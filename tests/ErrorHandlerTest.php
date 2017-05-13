@@ -3,6 +3,7 @@
 namespace Struzik\ErrorHandler;
 
 use Struzik\ErrorHandler\Processor\LoggerProcessor;
+use Struzik\ErrorHandler\Processor\ProcessorInterface;
 use Struzik\ErrorHandler\Processor\ReturnFalseProcessor;
 use Struzik\ErrorHandler\Exception\LogicException;
 use Psr\Log\NullLogger;
@@ -91,6 +92,33 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
     public function testExcuteHandleOnEmptyStack()
     {
         $errorHandler = new ErrorHandler();
+        $this->assertEquals(null, $errorHandler->handle(E_USER_NOTICE, 'Dummy error', __FILE__, __LINE__));
+    }
+
+    public function testExecuteHandleOnNonEmptyStack()
+    {
+        $firstProcessor = $this->createMock(ProcessorInterface::class);
+        $firstProcessor->expects($this->once())
+            ->method('getErrorTypes')
+            ->will($this->returnValue(E_ALL));
+        $firstProcessor->expects($this->once())
+            ->method('handle');
+
+        $secondProcessor = $this->createMock(ProcessorInterface::class);
+        $secondProcessor->expects($this->once())
+            ->method('getErrorTypes')
+            ->will($this->returnValue(E_ALL & ~E_USER_NOTICE));
+        $secondProcessor->expects($this->never())
+            ->method('handle');
+
+        $stack = [
+            $firstProcessor,
+            $secondProcessor,
+        ];
+
+        $errorHandler = new ErrorHandler();
+        $errorHandler->setProcessorsStack($stack);
+
         $this->assertEquals(null, $errorHandler->handle(E_USER_NOTICE, 'Dummy error', __FILE__, __LINE__));
     }
 }
