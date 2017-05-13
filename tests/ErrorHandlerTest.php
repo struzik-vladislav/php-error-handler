@@ -126,4 +126,24 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(null, $errorHandler->handle(E_USER_NOTICE, 'Dummy error', __FILE__, __LINE__));
     }
+
+    public function testSetRestoreHandler()
+    {
+        $this->expectException(\PHPUnit_Framework_Error::class);
+
+        $processor = $this->createMock(ProcessorInterface::class);
+        $processor->expects($this->once())
+            ->method('getErrorTypes')
+            ->will($this->returnValue(E_ALL));
+        $processor->expects($this->once())
+            ->method('handle');
+
+        $errorHandler = (new ErrorHandler())
+            ->pushProcessor($processor);
+
+        $errorHandler->set();
+        trigger_error('Dummy error with enabled handler', E_USER_WARNING);
+        $errorHandler->restore();
+        trigger_error('Dummy error with disabled handler', E_USER_WARNING);
+    }
 }
