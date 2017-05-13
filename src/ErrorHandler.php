@@ -13,7 +13,7 @@ class ErrorHandler
     /**
      * @var array
      */
-    private $processorStack = [];
+    private $processorsStack = [];
 
     /**
      * Error handler.
@@ -27,11 +27,11 @@ class ErrorHandler
      */
     public function handle($errno, $errstr, $errfile, $errline)
     {
-        if (!$this->processorStack) {
+        if (!$this->processorsStack) {
             return;
         }
 
-        foreach ($this->processorStack as $processor) {
+        foreach ($this->processorsStack as $processor) {
             if (!($processor->getErrorTypes() & $errno)) {
                 continue;
             }
@@ -71,7 +71,7 @@ class ErrorHandler
      */
     public function pushProcessor(ProcessorInterface $processor)
     {
-        array_unshift($this->processorStack, $processor);
+        array_unshift($this->processorsStack, $processor);
 
         return $this;
     }
@@ -83,11 +83,11 @@ class ErrorHandler
      */
     public function popProcessor()
     {
-        if (!$this->processorStack) {
+        if (!$this->processorsStack) {
             throw new LogicException('You tried to pop from an empty processor stack.');
         }
 
-        return array_shift($this->processorStack);
+        return array_shift($this->processorsStack);
     }
 
     /**
@@ -95,9 +95,9 @@ class ErrorHandler
      *
      * @param ProcessorInterface[] $stack processors stack
      */
-    public function setProcessorStack(array $stack)
+    public function setProcessorsStack(array $stack)
     {
-        $this->processorStack = [];
+        $this->processorsStack = [];
         foreach (array_reverse($stack) as $processor) {
             $this->pushProcessor($processor);
         }
@@ -110,8 +110,8 @@ class ErrorHandler
      *
      * @return array
      */
-    public function getProcessorStack()
+    public function getProcessorsStack()
     {
-        return $this->processorStack;
+        return $this->processorsStack;
     }
 }
