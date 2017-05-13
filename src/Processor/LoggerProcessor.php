@@ -81,13 +81,13 @@ class LoggerProcessor implements ProcessorInterface
         $associations = [
             E_WARNING => LogLevel::WARNING,
             E_NOTICE => LogLevel::NOTICE,
-            E_USER_ERROR => LogLevel::CRITICAL,
+            E_USER_ERROR => LogLevel::ERROR,
             E_USER_WARNING => LogLevel::WARNING,
             E_USER_NOTICE => LogLevel::NOTICE,
-            E_STRICT => LogLevel::WARNING,
-            E_RECOVERABLE_ERROR => LogLevel::CRITICAL,
-            E_DEPRECATED => LogLevel::INFO,
-            E_USER_DEPRECATED => LogLevel::INFO,
+            E_STRICT => LogLevel::NOTICE,
+            E_RECOVERABLE_ERROR => LogLevel::ERROR,
+            E_DEPRECATED => LogLevel::NOTICE,
+            E_USER_DEPRECATED => LogLevel::NOTICE,
         ];
 
         if (isset($associations[$errno])) {
