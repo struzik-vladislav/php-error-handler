@@ -76,7 +76,7 @@ class LoggerProcessor implements ProcessorInterface
      *
      * @return string
      */
-    public function getAssociatedLogLevel($errno)
+    private function getAssociatedLogLevel($errno)
     {
         $associations = [
             E_WARNING => LogLevel::WARNING,
