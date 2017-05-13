@@ -19,7 +19,11 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidTypeOfProcessor()
     {
-        $this->expectException(\TypeError::class);
+        if (version_compare(phpversion(), '7.0.0') >= 0) {
+            $this->expectException(\TypeError::class);
+        } else {
+            $this->expectException(\PHPUnit_Framework_Error::class);
+        }
 
         $invalidStack = [
             new \stdClass(),
@@ -36,7 +40,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
         if (version_compare(phpversion(), '7.0.0') >= 0) {
             $this->expectException(\TypeError::class);
         } else {
-            $this->expectException(\PHPUnit_Framework_Error);
+            $this->expectException(\PHPUnit_Framework_Error::class);
         }
 
         $errorHandler = new ErrorHandler();
