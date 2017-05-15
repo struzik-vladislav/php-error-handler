@@ -39,7 +39,7 @@ class ErrorHandler
             $lastResult = $processor->handle($errno, $errstr, $errfile, $errline);
         }
 
-        return $lastResult;
+        return isset($lastResult) ? $lastResult : null;
     }
 
     /**
