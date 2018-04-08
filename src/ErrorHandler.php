@@ -28,7 +28,7 @@ class ErrorHandler
     public function handle($errno, $errstr, $errfile, $errline)
     {
         if (!$this->processorsStack) {
-            return;
+            return null;
         }
 
         foreach ($this->processorsStack as $processor) {
@@ -79,7 +79,9 @@ class ErrorHandler
     /**
      * Retrieving processor from the stack.
      *
-     * @return ProcessorInterface | LogicException
+     * @return ProcessorInterface
+     *
+     * @throws LogicException
      */
     public function popProcessor()
     {
@@ -94,6 +96,8 @@ class ErrorHandler
      * Setting the processors stack as array.
      *
      * @param ProcessorInterface[] $stack processors stack
+     *
+     * @return ErrorHandler
      */
     public function setProcessorsStack(array $stack)
     {

@@ -94,7 +94,7 @@ class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
         $errorHandler->popProcessor();
     }
 
-    public function testExcuteHandleOnEmptyStack()
+    public function testExecuteHandleOnEmptyStack()
     {
         $errorHandler = new ErrorHandler();
         $this->assertEquals(null, $errorHandler->handle(E_USER_NOTICE, 'Dummy error', __FILE__, __LINE__));

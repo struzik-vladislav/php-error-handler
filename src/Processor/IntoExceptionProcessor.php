@@ -5,7 +5,7 @@ namespace Struzik\ErrorHandler\Processor;
 use Struzik\ErrorHandler\Exception;
 
 /**
- * Convertation the raised error into exception.
+ * Convert the raised error into exception.
  */
 class IntoExceptionProcessor implements ProcessorInterface
 {

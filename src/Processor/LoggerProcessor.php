@@ -60,13 +60,15 @@ class LoggerProcessor implements ProcessorInterface
     {
         $level = $this->getAssociatedLogLevel($errno);
 
-        return $this->logger->log(
+        $this->logger->log(
             $level,
             sprintf('%s in %s:%s', $errstr, $errfile, $errline),
             [
                 'backtrace' => (new \Exception(''))->getTraceAsString(),
             ]
         );
+
+        return null;
     }
 
     /**

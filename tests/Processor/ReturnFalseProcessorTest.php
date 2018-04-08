@@ -2,7 +2,7 @@
 
 namespace Struzik\ErrorHandler\Processor;
 
-class ResurnFalseProcessorTest extends \PHPUnit_Framework_TestCase
+class ReturnFalseProcessorTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetSetErrorTypes()
     {
